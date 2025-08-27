@@ -60,7 +60,7 @@ export default function GlobalLoading() {
 
     // Hide loading after page is fully loaded
     const handleLoad = () => {
-      // Ensure loading shows for at least 5 seconds
+      // Small delay to ensure smooth transition
       setTimeout(() => {
         setIsLoading(false);
 
@@ -80,7 +80,7 @@ export default function GlobalLoading() {
         document.removeEventListener("scroll", preventScroll, {
           capture: true,
         });
-      }, 5000); // Changed from 500ms to 5000ms (5 seconds)
+      }, 500);
     };
 
     // Check if page is already loaded
