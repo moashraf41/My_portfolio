@@ -43,7 +43,12 @@ export const heroAnimations = {
     tl.fromTo(
       heroRef,
       { opacity: 0, y: 50 },
-      { opacity: 1, y: 0, duration: 1, ease: "power3.out" },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power3.out",
+      },
       0
     );
 
@@ -51,7 +56,13 @@ export const heroAnimations = {
     tl.fromTo(
       codeRef,
       { opacity: 0, x: 100, scale: 0.9 },
-      { opacity: 1, x: 0, scale: 1, duration: 1.2, ease: "back.out(1.7)" },
+      {
+        opacity: 1,
+        x: 0,
+        scale: 1,
+        duration: 1.2,
+        ease: "back.out(1.7)",
+      },
       0.3
     );
 

@@ -10,6 +10,7 @@ import { MdDownload } from "react-icons/md";
 import { RiContactsFill } from "react-icons/ri";
 import SplitText from "../../../SplitText";
 import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import { heroAnimations, backgroundAnimations } from "@/utils/gsap-animations";
 
 function HeroSection() {
@@ -45,7 +46,7 @@ function HeroSection() {
   }, []);
 
   return (
-    <section className="relative flex flex-col items-center justify-between  pt-32  overflow-hidden">
+    <section className="relative flex flex-col items-center justify-between pt-32 overflow-hidden">
       {/* Hero background image */}
       <Image
         src="/hero.svg"
