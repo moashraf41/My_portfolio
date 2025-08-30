@@ -32,12 +32,21 @@ export const animationPresets = {
 
 // Hero Section Animations
 export const heroAnimations = {
-  // Main hero timeline
+  // Main hero timeline - FIXED VERSION
   mainTimeline: (heroRef, codeRef, socialRef, buttonsRef) => {
     const tl = gsap.timeline({ delay: 0.5 });
 
-    // Initial state
-    gsap.set([heroRef, codeRef, socialRef, buttonsRef], { opacity: 0 });
+    // Check if refs exist
+    if (!heroRef || !codeRef || !socialRef || !buttonsRef) {
+      console.warn("Some refs are missing in heroAnimations.mainTimeline");
+      return tl;
+    }
+
+    // Initial state - Only set opacity for main containers
+    gsap.set([heroRef, codeRef], { opacity: 0 });
+
+    // Don't set opacity 0 for social and buttons containers to prevent hiding
+    gsap.set([socialRef, buttonsRef], { opacity: 1 });
 
     // Hero text animation
     tl.fromTo(
@@ -66,41 +75,49 @@ export const heroAnimations = {
       0.3
     );
 
-    // Social icons animation
-    tl.fromTo(
-      socialRef.children,
-      { opacity: 0, y: 30, scale: 0.8 },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.6,
-        ease: "back.out(1.7)",
-        stagger: 0.1,
-      },
-      0.8
-    );
+    // Social icons animation - FIXED
+    const socialChildren = socialRef.querySelectorAll("a");
+    if (socialChildren.length > 0) {
+      gsap.set(socialChildren, { opacity: 0, y: 30, scale: 0.8 });
+      tl.to(
+        socialChildren,
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          ease: "back.out(1.7)",
+          stagger: 0.1,
+        },
+        0.8
+      );
+    }
 
-    // Buttons animation
-    tl.fromTo(
-      buttonsRef.children,
-      { opacity: 0, y: 20, scale: 0.9 },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.5,
-        ease: "back.out(1.7)",
-        stagger: 0.1,
-      },
-      1.2
-    );
+    // Buttons animation - FIXED
+    const buttonChildren = buttonsRef.querySelectorAll("a");
+    if (buttonChildren.length > 0) {
+      gsap.set(buttonChildren, { opacity: 0, y: 20, scale: 0.9 });
+      tl.to(
+        buttonChildren,
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.5,
+          ease: "back.out(1.7)",
+          stagger: 0.1,
+        },
+        1.2
+      );
+    }
 
     return tl;
   },
 
   // Code typing animation
   codeTyping: (codeElement) => {
+    if (!codeElement) return gsap.timeline();
+
     const codeLines = codeElement.querySelectorAll("div");
     const tl = gsap.timeline({ delay: 1.5 });
 

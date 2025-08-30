@@ -160,14 +160,15 @@ function HeroSection() {
                 <RiContactsFill size={16} />
               </button>
             </Link>
-
             <Link
               href={personalData.resume}
               target="_blank"
-              className="flex items-center gap-1 hover:gap-3 rounded-full bg-gradient-to-r from-pink-500 to-violet-600 px-3 md:px-8 py-3 md:py-4 text-center text-xs md:text-sm font-medium uppercase tracking-wider text-white md:font-semibold hover:scale-105 transition-transform duration-300"
+              className="bg-gradient-to-r from-violet-600 to-pink-500 p-[1px] rounded-full transition-all duration-300 hover:from-pink-500 hover:to-violet-600 hover:scale-105"
             >
-              <span>Get Resume</span>
-              <MdDownload size={16} />
+              <button className="px-3 md:px-8 py-3 md:py-4 bg-[#0d1224] rounded-full border-none text-center md:text-sm font-medium uppercase tracking-wider text-white flex items-center gap-1 hover:gap-3">
+                <span>Get Resume</span>
+                <MdDownload size={16} />
+              </button>
             </Link>
           </div>
         </div>
