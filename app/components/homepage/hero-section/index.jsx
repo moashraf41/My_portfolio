@@ -39,6 +39,24 @@ function HeroSection() {
       backgroundAnimations.floatingParticles(particles);
     }
 
+    // Ensure social icons are visible after animations
+    if (socialRef.current) {
+      gsap.set(socialRef.current.children, {
+        opacity: 1,
+        visibility: "visible",
+        display: "block",
+      });
+    }
+
+    // Ensure buttons are visible after animations
+    if (buttonsRef.current) {
+      gsap.set(buttonsRef.current.children, {
+        opacity: 1,
+        visibility: "visible",
+        display: "block",
+      });
+    }
+
     return () => {
       mainTimeline.kill();
       codeTimeline.kill();
@@ -85,33 +103,54 @@ function HeroSection() {
             textAlign="left"
           />
 
-          {/* Social Icons */}
-          <div ref={socialRef} className="my-12 flex items-center gap-5">
+          {/* Social Icons - Enhanced visibility and debugging */}
+          <div
+            ref={socialRef}
+            className="my-12 flex items-center gap-5 opacity-100 visible"
+            style={{
+              opacity: 1,
+              visibility: "visible",
+              display: "flex",
+              zIndex: 10,
+            }}
+          >
             <Link
               href={personalData.github}
               target="_blank"
-              className="transition-all text-pink-500 hover:scale-125 duration-300 hover:text-[#16f2b3]"
+              className="transition-all text-pink-500 hover:scale-125 duration-300 hover:text-[#16f2b3] block opacity-100"
+              style={{ opacity: 1, display: "block" }}
             >
               <BsGithub size={30} />
             </Link>
             <Link
               href={personalData.linkedIn}
               target="_blank"
-              className="transition-all text-pink-500 hover:scale-125 duration-300 hover:text-[#16f2b3]"
+              className="transition-all text-pink-500 hover:scale-125 duration-300 hover:text-[#16f2b3] block opacity-100"
+              style={{ opacity: 1, display: "block" }}
             >
               <BsLinkedin size={30} />
             </Link>
             <Link
               href={personalData.facebook}
               target="_blank"
-              className="transition-all text-pink-500 hover:scale-125 duration-300 hover:text-[#16f2b3]"
+              className="transition-all text-pink-500 hover:scale-125 duration-300 hover:text-[#16f2b3] block opacity-100"
+              style={{ opacity: 1, display: "block" }}
             >
               <FaFacebook size={30} />
             </Link>
           </div>
 
-          {/* Contact & Resume Buttons */}
-          <div ref={buttonsRef} className="flex items-center gap-3">
+          {/* Contact & Resume Buttons - Enhanced visibility */}
+          <div
+            ref={buttonsRef}
+            className="flex items-center gap-3 opacity-100 visible"
+            style={{
+              opacity: 1,
+              visibility: "visible",
+              display: "flex",
+              zIndex: 10,
+            }}
+          >
             <Link
               href="#contact"
               className="bg-gradient-to-r from-violet-600 to-pink-500 p-[1px] rounded-full transition-all duration-300 hover:from-pink-500 hover:to-violet-600 hover:scale-105"

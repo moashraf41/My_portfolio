@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 gsap.registerPlugin(ScrollToPlugin);
 
-// Exact GooeyNav component from React Bits
+// Enhanced GooeyNav component with better responsive handling
 const GooeyNav = ({
   items,
   animationTime = 600,
@@ -143,7 +143,7 @@ const GooeyNav = ({
 
   return (
     <>
-      {/* Exact styles from React Bits */}
+      {/* Enhanced styles with better responsive handling */}
       <style>
         {`
           :root {
@@ -164,6 +164,7 @@ const GooeyNav = ({
           .effect.text {
             color: white;
             transition: color 0.3s ease;
+            font-size: inherit;
           }
           .effect.text.active {
             color: black;
@@ -264,15 +265,15 @@ const GooeyNav = ({
               opacity: 0;
             }
           }
-          li.active {
+          .gooey-nav-item.active {
             color: black;
             text-shadow: none;
           }
-          li.active::after {
+          .gooey-nav-item.active::after {
             opacity: 1;
             transform: scale(1);
           }
-          li::after {
+          .gooey-nav-item::after {
             content: "";
             position: absolute;
             inset: 0;
@@ -283,16 +284,42 @@ const GooeyNav = ({
             transition: all 0.3s ease;
             z-index: -1;
           }
+          .gooey-nav-container {
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+          }
+          .gooey-nav-container::-webkit-scrollbar {
+            display: none;
+          }
+          @media (max-width: 1280px) {
+            .gooey-nav-ul {
+              gap: 1rem;
+            }
+            .gooey-nav-item a {
+              padding: 0.5em 0.75em;
+              font-size: 0.9rem;
+            }
+          }
+          @media (max-width: 1024px) {
+            .gooey-nav-ul {
+              gap: 0.75rem;
+            }
+            .gooey-nav-item a {
+              padding: 0.5em 0.6em;
+              font-size: 0.85rem;
+            }
+          }
         `}
       </style>
-      <div className="relative" ref={containerRef}>
+      <div className="relative gooey-nav-container" ref={containerRef}>
         <nav
           className="flex relative"
           style={{ transform: "translate3d(0,0,0.01px)" }}
         >
           <ul
             ref={navRef}
-            className="flex gap-8 list-none p-0 px-4 m-0 relative z-[3]"
+            className="flex gap-4 xl:gap-8 list-none p-0 px-2 sm:px-4 m-0 relative z-[3] whitespace-nowrap gooey-nav-ul"
             style={{
               color: "white",
               textShadow: "0 1px 1px hsl(205deg 30% 10% / 0.2)",
@@ -301,7 +328,7 @@ const GooeyNav = ({
             {items.map((item, index) => (
               <li
                 key={index}
-                className={`rounded-full relative cursor-pointer transition-[background-color_color_box-shadow] duration-300 ease shadow-[0_0_0.5px_1.5px_transparent] text-white ${
+                className={`rounded-full relative cursor-pointer transition-[background-color_color_box-shadow] duration-300 ease shadow-[0_0_0.5px_1.5px_transparent] text-white flex-shrink-0 gooey-nav-item ${
                   activeIndex === index ? "active" : ""
                 }`}
               >
@@ -309,7 +336,7 @@ const GooeyNav = ({
                   onClick={(e) => handleClick(e, index)}
                   href={item.href}
                   onKeyDown={(e) => handleKeyDown(e, index)}
-                  className="outline-none py-[0.6em] px-[1em] inline-block"
+                  className="outline-none py-[0.6em] px-[0.8em] lg:px-[1em] inline-block text-sm lg:text-base"
                 >
                   {item.label}
                 </a>
@@ -331,10 +358,11 @@ function Navbar() {
   // Navigation items for the gooey nav
   const navItems = [
     { label: "ABOUT", href: "/#about", id: "about" },
-    { label: "EXPERIENCE", href: "/#experience", id: "experience" },
-    { label: "SKILLS", href: "/#skills", id: "skills" },
     { label: "EDUCATION", href: "/#education", id: "education" },
+    { label: "SKILLS", href: "/#skills", id: "skills" },
     { label: "PROJECTS", href: "/#projects", id: "projects" },
+    { label: "GALLERY", href: "/#gallery", id: "gallery" },
+    { label: "EXPERIENCE", href: "/#experience", id: "experience" },
   ];
 
   // Handle scroll effect for navbar background
@@ -380,6 +408,31 @@ function Navbar() {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+
+  // Close mobile menu on escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape" && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isMobileMenuOpen]);
+
+  // Prevent scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
 
   // Burger menu animation variants
   const burgerVariants = {
@@ -437,17 +490,20 @@ function Navbar() {
             : "bg-transparent"
         }`}
       >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between py-5">
-            {/* Logo */}
+        <div className="container mx-auto px-2 sm:px-4">
+          <div className="flex items-center justify-between py-3 sm:py-5">
+            {/* Logo - Responsive text sizing */}
             <div className="flex flex-shrink-0 items-center">
-              <Link href="/" className="text-[#16f2b3] text-3xl font-bold">
+              <Link
+                href="/"
+                className="text-[#16f2b3] text-xl sm:text-2xl lg:text-3xl font-bold"
+              >
                 Mohamed Ashraf
               </Link>
             </div>
 
-            {/* Gooey Navigation - Exact React Bits implementation */}
-            <div className="hidden lg:block">
+            {/* Gooey Navigation - Hidden below 1028px */}
+            <div className="hidden min-[1028px]:block max-w-full overflow-hidden">
               <GooeyNav
                 items={navItems}
                 particleCount={15}
@@ -461,31 +517,32 @@ function Navbar() {
               />
             </div>
 
-            {/* Mobile Burger Menu Button */}
+            {/* Mobile Burger Menu Button - Shows below 1028px */}
             <motion.button
-              className="lg:hidden flex flex-col justify-center items-center w-8 h-8 relative z-50"
+              className="min-[1028px]:hidden flex flex-col justify-center items-center w-8 h-8 relative z-50 p-1"
               onClick={toggleMobileMenu}
               variants={burgerVariants}
               animate={isMobileMenuOpen ? "open" : "closed"}
+              aria-label="Toggle mobile menu"
             >
               <motion.span
-                className="w-6 h-0.5 bg-white block transition-all duration-300"
+                className="w-5 sm:w-6 h-0.5 bg-white block transition-all duration-300"
                 animate={{
                   rotate: isMobileMenuOpen ? 45 : 0,
-                  y: isMobileMenuOpen ? 2 : -4,
+                  y: isMobileMenuOpen ? 2 : -3,
                 }}
               />
               <motion.span
-                className="w-6 h-0.5 bg-white block transition-all duration-300 my-1"
+                className="w-5 sm:w-6 h-0.5 bg-white block transition-all duration-300 my-0.5 sm:my-1"
                 animate={{
                   opacity: isMobileMenuOpen ? 0 : 1,
                 }}
               />
               <motion.span
-                className="w-6 h-0.5 bg-white block transition-all duration-300"
+                className="w-5 sm:w-6 h-0.5 bg-white block transition-all duration-300"
                 animate={{
                   rotate: isMobileMenuOpen ? -45 : 0,
-                  y: isMobileMenuOpen ? -2 : 4,
+                  y: isMobileMenuOpen ? -2 : 3,
                 }}
               />
             </motion.button>
@@ -493,7 +550,7 @@ function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Menu - Moved outside navbar to prevent backdrop inheritance */}
+      {/* Mobile Menu - Enhanced responsive design */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -506,19 +563,15 @@ function Navbar() {
               onClick={toggleMobileMenu}
             />
 
-            {/* Mobile Menu - Now with its own backdrop-blur */}
+            {/* Mobile Menu - Fully responsive width */}
             <motion.div
-              className="fixed top-0 right-0 h-full w-80 bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-xl shadow-2xl z-50 border-l border-gray-800/50"
+              className="fixed top-0 right-0 h-full w-full max-w-xs sm:max-w-sm bg-gradient-to-br from-gray-900/95 to-black/95 backdrop-blur-xl shadow-2xl z-50 border-l border-gray-800/50"
               variants={mobileMenuVariants}
               initial="closed"
               animate="open"
               exit="closed"
             >
-              <div className="flex flex-col pt-20 px-8 h-full">
-                {/* <div className="text-[#16f2b3] text-lg font-bold mb-8">
-                  Navigation
-                </div> */}
-
+              <div className="flex flex-col pt-16 sm:pt-20 px-6 sm:px-8 h-full">
                 {navItems.map((item, index) => (
                   <motion.div
                     key={index}
@@ -527,11 +580,11 @@ function Navbar() {
                     animate="open"
                     exit="closed"
                     custom={index}
-                    className="mb-6"
+                    className="mb-4 sm:mb-6"
                   >
                     <button
                       onClick={() => handleMobileMenuClick(item)}
-                      className="text-white text-lg font-medium hover:text-[#16f2b3] transition-colors duration-300 w-full text-left group"
+                      className="text-white text-base sm:text-lg font-medium hover:text-[#16f2b3] transition-colors duration-300 w-full text-left group"
                     >
                       <span className="block transform group-hover:translate-x-2 transition-transform duration-300">
                         {item.label}
@@ -541,15 +594,15 @@ function Navbar() {
                   </motion.div>
                 ))}
 
-                {/* Decorative element */}
+                {/* Decorative element - Responsive positioning */}
                 <motion.div
-                  className="absolute bottom-10 left-8 right-8"
+                  className="absolute bottom-8 sm:bottom-10 left-6 sm:left-8 right-6 sm:right-8"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8 }}
                 >
                   <div className="h-px bg-gradient-to-r from-transparent via-[#16f2b3] to-transparent" />
-                  <div className="text-center text-gray-400 text-sm mt-4">
+                  <div className="text-center text-gray-400 text-xs sm:text-sm mt-4">
                     Mohamed Ashraf Portfolio
                   </div>
                 </motion.div>
