@@ -7,6 +7,206 @@ import { motion, AnimatePresence } from "framer-motion";
 
 gsap.registerPlugin(ScrollToPlugin);
 
+// Music Control Component
+const MusicControl = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
+  const audioRef = useRef(null);
+
+  // Replace with your audio file URL
+  const audioSrc = "/sound (mp3cut.net).mp3"; // Update this path
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.volume = 0.07;
+    audio.loop = true;
+
+    // Handle audio events
+    const handleCanPlay = () => {
+      console.log("Audio loaded");
+    };
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
+    audio.addEventListener("canplay", handleCanPlay);
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
+
+    return () => {
+      audio.removeEventListener("canplay", handleCanPlay);
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
+    };
+  }, []);
+
+  const toggleMusic = async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    try {
+      if (!hasStarted) {
+        await audio.play();
+        setHasStarted(true);
+        setIsPlaying(true);
+        setIsMuted(false);
+      } else if (isPlaying) {
+        if (isMuted) {
+          audio.volume = 0.07;
+          setIsMuted(false);
+        } else {
+          audio.volume = 0;
+          setIsMuted(true);
+        }
+      } else {
+        await audio.play();
+        setIsPlaying(true);
+        setIsMuted(false);
+        audio.volume = 0.07;
+      }
+    } catch (error) {
+      console.error("Audio play error:", error);
+    }
+  };
+
+  // Animation variants for the music waves
+  const waveVariants = {
+    playing: {
+      scaleY: [0.5, 1.2, 0.8, 1.5, 0.6, 1.1],
+      transition: {
+        duration: 1.5,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    },
+    muted: {
+      scaleY: 0.3,
+      transition: {
+        duration: 0.3,
+      },
+    },
+    stopped: {
+      scaleY: 0.5,
+      transition: {
+        duration: 0.3,
+      },
+    },
+  };
+
+  // Get current state for animation
+  const getAnimationState = () => {
+    if (!hasStarted) return "stopped";
+    if (isMuted) return "muted";
+    if (isPlaying) return "playing";
+    return "stopped";
+  };
+
+  return (
+    <>
+      {/* Hidden audio element */}
+      <audio ref={audioRef} src={audioSrc} preload="auto" />
+
+      {/* Music Control Button */}
+      <motion.button
+        onClick={toggleMusic}
+        className="relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-[#16f2b3]/20 to-[#8b5cf6]/20 backdrop-blur-sm border border-[#16f2b3]/30 hover:border-[#16f2b3]/60 transition-all duration-300 group"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        aria-label={
+          !hasStarted ? "Start music" : isMuted ? "Unmute music" : "Mute music"
+        }
+      >
+        {/* Outer glow effect */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#16f2b3]/10 to-[#8b5cf6]/10 blur-md group-hover:blur-lg transition-all duration-300" />
+
+        {/* Music icon container */}
+        <div className="relative flex items-center justify-center w-6 h-6">
+          <AnimatePresence mode="wait">
+            {!hasStarted ? (
+              // Play icon
+              <motion.div
+                key="play"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-center justify-center"
+              >
+                <div className="w-0 h-0 border-l-[8px] border-l-[#16f2b3] border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent ml-1" />
+              </motion.div>
+            ) : (
+              // Music waves icon
+              <motion.div
+                key="waves"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-end justify-center space-x-0.5 h-4"
+              >
+                {[0, 1, 2, 3].map((i) => (
+                  <motion.div
+                    key={i}
+                    className={`w-1 rounded-full ${
+                      isMuted ? "bg-gray-500" : "bg-[#16f2b3]"
+                    }`}
+                    style={{ height: `${12 + i * 2}px` }}
+                    variants={waveVariants}
+                    animate={getAnimationState()}
+                    transition={{
+                      delay: i * 0.1,
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Mute indicator */}
+          <AnimatePresence>
+            {isMuted && hasStarted && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center"
+              >
+                <div className="w-1 h-1 bg-white rounded-full" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Pulse effect when playing */}
+        <AnimatePresence>
+          {isPlaying && !isMuted && (
+            <motion.div
+              initial={{ scale: 1, opacity: 0.5 }}
+              animate={{
+                scale: [1, 1.5, 1],
+                opacity: [0.5, 0, 0.5],
+              }}
+              exit={{ opacity: 0 }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="absolute inset-0 rounded-full border-2 border-[#16f2b3]"
+            />
+          )}
+        </AnimatePresence>
+      </motion.button>
+    </>
+  );
+};
+
 // Enhanced GooeyNav component with better responsive handling
 const GooeyNav = ({
   items,
@@ -517,35 +717,43 @@ function Navbar() {
               />
             </div>
 
-            {/* Mobile Burger Menu Button - Shows below 1028px */}
-            <motion.button
-              className="min-[1028px]:hidden flex flex-col justify-center items-center w-8 h-8 relative z-50 p-1"
-              onClick={toggleMobileMenu}
-              variants={burgerVariants}
-              animate={isMobileMenuOpen ? "open" : "closed"}
-              aria-label="Toggle mobile menu"
-            >
-              <motion.span
-                className="w-5 sm:w-6 h-0.5 bg-white block transition-all duration-300"
-                animate={{
-                  rotate: isMobileMenuOpen ? 45 : 0,
-                  y: isMobileMenuOpen ? 2 : -3,
-                }}
-              />
-              <motion.span
-                className="w-5 sm:w-6 h-0.5 bg-white block transition-all duration-300 my-0.5 sm:my-1"
-                animate={{
-                  opacity: isMobileMenuOpen ? 0 : 1,
-                }}
-              />
-              <motion.span
-                className="w-5 sm:w-6 h-0.5 bg-white block transition-all duration-300"
-                animate={{
-                  rotate: isMobileMenuOpen ? -45 : 0,
-                  y: isMobileMenuOpen ? -2 : 3,
-                }}
-              />
-            </motion.button>
+            {/* Right side controls */}
+            <div className="flex items-center space-x-3">
+              {/* Music Control */}
+              <div className="relative group">
+                <MusicControl />
+              </div>
+
+              {/* Mobile Burger Menu Button - Shows below 1028px */}
+              <motion.button
+                className="min-[1028px]:hidden flex flex-col justify-center items-center w-8 h-8 relative z-50 p-1"
+                onClick={toggleMobileMenu}
+                variants={burgerVariants}
+                animate={isMobileMenuOpen ? "open" : "closed"}
+                aria-label="Toggle mobile menu"
+              >
+                <motion.span
+                  className="w-5 sm:w-6 h-0.5 bg-white block transition-all duration-300"
+                  animate={{
+                    rotate: isMobileMenuOpen ? 45 : 0,
+                    y: isMobileMenuOpen ? 2 : -3,
+                  }}
+                />
+                <motion.span
+                  className="w-5 sm:w-6 h-0.5 bg-white block transition-all duration-300 my-0.5 sm:my-1"
+                  animate={{
+                    opacity: isMobileMenuOpen ? 0 : 1,
+                  }}
+                />
+                <motion.span
+                  className="w-5 sm:w-6 h-0.5 bg-white block transition-all duration-300"
+                  animate={{
+                    rotate: isMobileMenuOpen ? -45 : 0,
+                    y: isMobileMenuOpen ? -2 : 3,
+                  }}
+                />
+              </motion.button>
+            </div>
           </div>
         </div>
       </nav>

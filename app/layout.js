@@ -9,6 +9,8 @@ import GlobalLoading from "./components/global-loading";
 import "./css/card.scss";
 import "./css/globals.scss";
 import GSAPInitializer from "./components/gsap-initializer";
+import { Analytics } from "@vercel/analytics/react";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -30,6 +32,7 @@ export default function RootLayout({ children }) {
           <ScrollToTop />
         </main>
         <Footer />
+        <Analytics />
       </body>
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM} />
     </html>
