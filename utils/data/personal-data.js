@@ -12,5 +12,5 @@ export const personalData = {
   facebook: "https://www.facebook.com/mohamed.ashraf.6535/",
   linkedIn: "https://www.linkedin.com/in/mohamed-ashraf41/",
   resume:
-    "https://drive.google.com/file/d/11FdoPbthxSbu8BPXnV4wHEKRox9d_ZhW/view?usp=sharing",
+    "https://drive.google.com/file/d/1DsVY6-QIhA6FyJhiH_E2H_pui2DpGA9M/view?usp=sharing",
 };
