@@ -90,16 +90,18 @@ function HeroSection() {
           className="order-2 lg:order-1 flex flex-col items-start justify-center p-2 pb-20 md:pb-10 lg:pt-10"
         >
           <SplitText
-            text={`Hello, This is ${personalData.name}, I'm a Professional ${personalData.designation}.`}
-            className="text-3xl font-bold leading-10 text-white md:font-extrabold lg:text-[2.6rem] lg:leading-[3.5rem]"
-            delay={100}
-            duration={0.6}
+            tag="h1"
+            text={`Hi, I'm ${personalData.name},\n I craft seamless digital experiences as a ${personalData.designation}.`}
+            className="whitespace-pre-line max-w-[650px] mx-auto text-2xl font-bold leading-9 text-white 
+             md:text-4xl md:leading-[3rem] lg:text-[3rem] lg:leading-[4rem] "
+            delay={80}
+            duration={0.7}
             ease="power3.out"
-            splitType="chars"
-            from={{ opacity: 0, y: 40 }}
+            splitType="words, chars"
+            from={{ opacity: 0, y: 50 }}
             to={{ opacity: 1, y: 0 }}
-            threshold={0.1}
-            rootMargin="-100px"
+            threshold={0.2} // يبدأ بدري شوية
+            rootMargin="-50px"
             textAlign="left"
           />
 
