@@ -153,21 +153,27 @@ function HeroSection() {
           >
             <Link
               href="#contact"
-              className="bg-gradient-to-r from-violet-600 to-pink-500 p-[1px] rounded-full transition-all duration-300 hover:from-pink-500 hover:to-violet-600 hover:scale-105"
+              className="relative bg-gradient-to-r from-violet-600 to-pink-500 p-[1px] rounded-full transition-all duration-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] group"
             >
-              <button className="px-3 md:px-8 py-3 md:py-4 bg-[#0d1224] rounded-full border-none text-center md:text-sm font-medium uppercase tracking-wider text-white flex items-center gap-1 hover:gap-3">
+              <button className="px-3 md:px-8 py-3 md:py-4 bg-[#0d1224] rounded-full border-none text-center md:text-sm font-medium uppercase tracking-wider text-white flex items-center gap-1  transition-all duration-300 group-hover:text-[#16f2b3]">
                 <span>Contact me</span>
-                <RiContactsFill size={16} />
+                <RiContactsFill
+                  size={16}
+                  className="transition-transform duration-300 group-hover:rotate-12"
+                />
               </button>
             </Link>
             <Link
               href={personalData.resume}
               target="_blank"
-              className="bg-gradient-to-r from-violet-600 to-pink-500 p-[1px] rounded-full transition-all duration-300 hover:from-pink-500 hover:to-violet-600 hover:scale-105"
+              className="relative bg-gradient-to-r from-violet-600 to-pink-500 p-[1px] rounded-full transition-all duration-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] group"
             >
-              <button className="px-3 md:px-8 py-3 md:py-4 bg-[#0d1224] rounded-full border-none text-center md:text-sm font-medium uppercase tracking-wider text-white flex items-center gap-1 hover:gap-3">
+              <button className="px-3 md:px-8 py-3 md:py-4 bg-[#0d1224] rounded-full border-none text-center md:text-sm font-medium uppercase tracking-wider text-white flex items-center gap-1  transition-all duration-300 group-hover:text-[#16f2b3]">
                 <span>Get Resume</span>
-                <MdDownload size={16} />
+                <MdDownload
+                  size={16}
+                  className="transition-transform duration-300 group-hover:rotate-12"
+                />
               </button>
             </Link>
           </div>
