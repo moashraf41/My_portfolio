@@ -192,10 +192,7 @@ export default function GlobalLoading() {
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <div className="text-center">
             {/* Logo */}
-            <div
-              className="mb-12 loading-fadeIn"
-              style={{ animationDelay: "0.2s" }}
-            >
+            <div className="mb-12 loading-fadeIn">
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#16f2b3] mb-4">
                 Mohamed Ashraf
               </h1>
@@ -203,10 +200,7 @@ export default function GlobalLoading() {
             </div>
 
             {/* Simple Elegant Spinner */}
-            <div
-              className="mb-8 loading-fadeIn"
-              style={{ animationDelay: "0.5s" }}
-            >
+            <div className="mb-8 loading-fadeIn">
               <div className="relative w-16 h-16 mx-auto">
                 {/* Outer ring */}
                 <div className="absolute inset-0 border-4 border-[#16f2b3]/30 rounded-full" />
@@ -218,10 +212,7 @@ export default function GlobalLoading() {
             </div>
 
             {/* Progress Bar */}
-            <div
-              className="w-64 mx-auto loading-fadeIn"
-              style={{ animationDelay: "0.8s" }}
-            >
+            <div className="w-64 mx-auto loading-fadeIn">
               <div className="w-full bg-[#1a1443] rounded-full h-1 mb-3 border border-[#25213b]">
                 <div
                   className="h-full bg-gradient-to-r from-[#16f2b3] to-violet-500 rounded-full transition-all duration-300 ease-out"
@@ -231,14 +222,6 @@ export default function GlobalLoading() {
               <p className="text-[#16f2b3] text-sm">
                 {Math.floor(Math.min(progress, 100))}%
               </p>
-            </div>
-
-            {/* Simple Bottom Text */}
-            <div
-              className="absolute bottom-12 left-1/2 transform -translate-x-1/2 loading-fadeIn"
-              style={{ animationDelay: "1s" }}
-            >
-              <p className="text-gray-500 text-sm">Loading Portfolio...</p>
             </div>
           </div>
         </div>
