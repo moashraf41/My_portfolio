@@ -19,6 +19,8 @@ import { sectionAnimations } from "@/utils/gsap-animations";
 import Image from "next/image";
 
 const IMGS = [
+  "scout.png",
+  "scout2.png",
   "kiara2.png",
   "palm3.png",
   "palm4.png",

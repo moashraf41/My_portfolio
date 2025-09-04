@@ -78,6 +78,17 @@ export const projectsData = [
     image: "/kiara.png",
   },
   {
+    id: 11,
+    name: "Scout Website",
+    description:
+      "Landing page for the “Scout” app: a sleek, responsive marketing site built with Next.js and TailwindCSS. It features clear pricing tiers, brand trust indicators, and smooth UI/UX enhanced by Shadcn UI components and Frame Motion animations.",
+    tools: ["Next.js", "TailwindCSS", "Shadcn UI", "Frame Motion", "Vercel"],
+    role: "Frontend Developer",
+    code: "https://github.com/moashraf41/Electro-Pi-Task",
+    demo: "https://electro-pi-task-five.vercel.app/",
+    image: "/scout.png",
+  },
+  {
     id: 5,
     name: "Restaurant Website",
     description:
