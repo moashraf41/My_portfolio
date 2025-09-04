@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BsGithub } from "react-icons/bs";
-import { FiExternalLink } from "react-icons/fi";
+import { FiExternalLink, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { projectAnimations, sectionAnimations } from "@/utils/gsap-animations";
 
 // SpotlightCard Component
@@ -54,7 +54,7 @@ const SpotlightCard = ({
 };
 
 // Project Card Component
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, index }) => {
   const cardRef = useRef(null);
 
   useEffect(() => {
@@ -68,6 +68,7 @@ const ProjectCard = ({ project }) => {
       ref={cardRef}
       className="project-card group hover:scale-[1.02] transition-all duration-500"
       spotlightColor="rgba(22, 242, 179, 0.15)"
+      style={{ animationDelay: `${index * 0.1}s` }}
     >
       <div className="relative flex flex-col">
         {/* Code Window Header */}
@@ -184,28 +185,155 @@ const ProjectCard = ({ project }) => {
   );
 };
 
+// Pagination Component
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  const getPageNumbers = () => {
+    const pages = [];
+    const showPages = 5; // Show 5 page numbers at most
+
+    if (totalPages <= showPages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) pages.push(i);
+        pages.push("...");
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push("...");
+        for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        pages.push("...");
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+        pages.push("...");
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  };
+
+  return (
+    <div className="flex items-center justify-center space-x-2 mt-12">
+      {/* Previous Button */}
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-700 bg-gray-800/60 text-gray-300 hover:bg-gray-700 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+      >
+        <FiChevronLeft className="w-5 h-5" />
+      </button>
+
+      {/* Page Numbers */}
+      {getPageNumbers().map((page, index) => (
+        <div key={index}>
+          {page === "..." ? (
+            <span className="flex items-center justify-center w-10 h-10 text-gray-500">
+              ...
+            </span>
+          ) : (
+            <button
+              onClick={() => onPageChange(page)}
+              className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-300 ${
+                currentPage === page
+                  ? "border-[#16f2b3] bg-gradient-to-r from-[#16f2b3] to-[#00d9ff] text-black font-semibold"
+                  : "border-gray-700 bg-gray-800/60 text-gray-300 hover:bg-gray-700 hover:text-white hover:border-[#16f2b3]/50"
+              }`}
+            >
+              {page}
+            </button>
+          )}
+        </div>
+      ))}
+
+      {/* Next Button */}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-700 bg-gray-800/60 text-gray-300 hover:bg-gray-700 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+      >
+        <FiChevronRight className="w-5 h-5" />
+      </button>
+    </div>
+  );
+};
+
 const Projects = () => {
   const projectsRef = useRef(null);
   const titleRef = useRef(null);
   const cardsRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  // Pagination settings
+  const projectsPerPage = 6; // Adjust this number as needed
+  const totalPages = Math.ceil(projectsData.length / projectsPerPage);
+
+  // Calculate current projects to display
+  const indexOfLastProject = currentPage * projectsPerPage;
+  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+  const currentProjects = projectsData.slice(
+    indexOfFirstProject,
+    indexOfLastProject
+  );
+
+  // Handle page change
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+      setIsInitialLoad(false);
+
+      // Smooth scroll to projects section when changing pages
+      if (projectsRef.current) {
+        projectsRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
+  };
 
   useEffect(() => {
-    // Title animation
-    if (titleRef.current) {
-      sectionAnimations.scaleInBounce(titleRef.current, 0.2);
-    }
+    // Only run initial animations on first load
+    if (isInitialLoad) {
+      // Title animation
+      if (titleRef.current) {
+        sectionAnimations.scaleInBounce(titleRef.current, 0.2);
+      }
 
-    // Project cards entrance animation
+      // Main container animation
+      if (projectsRef.current) {
+        sectionAnimations.fadeInStagger([projectsRef.current], 0.1, 0.1);
+      }
+    }
+  }, [isInitialLoad]);
+
+  useEffect(() => {
+    // Project cards entrance animation - runs for both initial load and pagination
     if (cardsRef.current) {
       const projectCards = cardsRef.current.querySelectorAll(".project-card");
-      projectAnimations.projectsEntrance(projectCards);
+      if (projectCards.length > 0) {
+        // Use a lighter animation for pagination changes
+        if (isInitialLoad) {
+          projectAnimations.projectsEntrance(projectCards);
+        } else {
+          // Simple fade-in for pagination
+          projectCards.forEach((card, index) => {
+            card.style.opacity = "0";
+            card.style.transform = "translateY(20px)";
+            setTimeout(() => {
+              card.style.transition = "all 0.4s ease-out";
+              card.style.opacity = "1";
+              card.style.transform = "translateY(0)";
+            }, index * 100);
+          });
+        }
+      }
     }
-
-    // Main container animation
-    if (projectsRef.current) {
-      sectionAnimations.fadeInStagger([projectsRef.current], 0.1, 0.1);
-    }
-  }, []);
+  }, [currentProjects, isInitialLoad]);
 
   return (
     <div
@@ -227,12 +355,25 @@ const Projects = () => {
 
       <div
         ref={cardsRef}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8 min-h-[600px]"
       >
-        {projectsData.map((project, index) => (
-          <ProjectCard key={index} project={project} />
+        {currentProjects.map((project, index) => (
+          <ProjectCard
+            key={`${currentPage}-${index}`}
+            project={project}
+            index={index}
+          />
         ))}
       </div>
+
+      {/* Show pagination only if there are multiple pages */}
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 };
